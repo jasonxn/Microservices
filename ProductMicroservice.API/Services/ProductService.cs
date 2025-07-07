@@ -31,6 +31,8 @@ namespace ProductMicroservice.API.Services
 
         public async Task<ProductResponseDto> CreateAsync(ProductRequestDto dto)
         {
+            ProductRequestValidator.Validate(dto);
+
             var entity = dto.ToEntity();
             var created = await _repo.AddAsync(entity).ConfigureAwait(false);
             return created.ToResponseDto();
@@ -38,12 +40,17 @@ namespace ProductMicroservice.API.Services
 
         public async Task<bool> UpdateAsync(int id, ProductRequestDto dto)
         {
-            if (!await _repo.ExistsAsync(id).ConfigureAwait(false))
+            ProductRequestValidator.Validate(dto);
+
+            var existing = await _repo.GetByIdAsync(id).ConfigureAwait(false);
+            if (existing == null)
                 return false;
 
-            var entity = dto.ToEntity();
-            entity.Id = id;
-            await _repo.UpdateAsync(entity).ConfigureAwait(false);
+            existing.Name = dto.Name;
+            existing.Price = dto.Price;
+            existing.Quantity = dto.Quantity;
+
+            await _repo.UpdateAsync(existing).ConfigureAwait(false);
             return true;
         }
 
