@@ -50,7 +50,7 @@ namespace OrderMicroservice.API.Services
 
             var orderEntity = dto.ToEntity();
             var created = await _orderRepo.AddAsync(orderEntity).ConfigureAwait(false);
-            
+
             return (true, null, created.ToResponseDto());
         }
 
