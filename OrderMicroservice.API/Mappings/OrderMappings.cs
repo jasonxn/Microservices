@@ -6,17 +6,19 @@ namespace OrderMicroservice.API.Mappings
 {
     public static class OrderMappings
     {
+        private static string GenerateReference() => $"ORD-{DateTime.UtcNow:yyyyMMdd-HHmmss}";
+
         public static Order ToEntity(this CreateOrderRequestDto dto)
         {
             var reference = !string.IsNullOrWhiteSpace(dto.Reference)
                 ? dto.Reference
-                : $"ORD-{DateTime.UtcNow:yyyyMMdd-HHmmss}";
+                : GenerateReference();
 
             var order = new Order
             {
                 Reference = reference,
                 CreatedAt = DateTime.UtcNow,
-                Items = dto.Items
+                Items = (dto.Items ?? Enumerable.Empty<CreateOrderItemDto>())
                     .Select(i => new OrderItem
                     {
                         ProductId = i.ProductId,
@@ -34,13 +36,13 @@ namespace OrderMicroservice.API.Mappings
             {
                 Reference = order.Reference,
                 CreatedAt = order.CreatedAt,
-                Items = order.Items
-                                  .Select(i => new OrderItemResponseDto
-                                  {
-                                      ProductId = i.ProductId,
-                                      Quantity = i.Quantity
-                                  })
-                                  .ToList()
+                Items = (order.Items ?? Enumerable.Empty<OrderItem>())
+                    .Select(i => new OrderItemResponseDto
+                    {
+                        ProductId = i.ProductId,
+                        Quantity = i.Quantity
+                    })
+                    .ToList()
             };
         }
     }
