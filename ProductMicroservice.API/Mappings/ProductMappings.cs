@@ -24,7 +24,9 @@ namespace ProductMicroservice.API.Mappings
                 Id = entity.Id,
                 Name = entity.Name,
                 Price = entity.Price,
-                Quantity = entity.Quantity
+                Quantity = entity.Quantity,
+                CreatedAt = entity.CreatedAt,
+                UpdatedAt = entity.UpdatedAt
             };
         }
 

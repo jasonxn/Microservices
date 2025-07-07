@@ -24,5 +24,28 @@ namespace OrderMicroservice.API.Data
                 .HasIndex(o => o.Reference)
                 .IsUnique();
         }
+        public override Task<int> SaveChangesAsync(CancellationToken ct = default)
+        {
+            var utcNow = DateTime.UtcNow;
+
+            foreach (var entry in ChangeTracker.Entries())
+            {
+                if (entry.Entity is OrderItem)
+                {
+                    if (entry.State == EntityState.Added)
+                    {
+                        entry.Property("CreatedAt").CurrentValue = utcNow;
+                        entry.Property("UpdatedAt").CurrentValue = utcNow;
+                    }
+                    else if (entry.State == EntityState.Modified)
+                    {
+                        entry.Property("UpdatedAt").CurrentValue = utcNow;
+                    }
+                }
+            }
+
+            return base.SaveChangesAsync(ct);
+        }
+
     }
 }
