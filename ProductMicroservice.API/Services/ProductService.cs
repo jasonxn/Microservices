@@ -56,15 +56,29 @@ namespace ProductMicroservice.API.Services
             return true;
         }
 
-        public async Task<bool> ValidateProductAsync(int id)
+        public async Task<ValidationResponseDto> ValidateProductAsync(int id)
         {
-            return await _repo.ExistsAsync(id).ConfigureAwait(false);
+            var exists = await _repo.ExistsAsync(id).ConfigureAwait(false);
+            return new ValidationResponseDto
+            {
+                IsValid = exists,
+                Message = exists
+                    ? "Product is valid."
+                    : $"Product with ID {id} does not exist."
+            };
         }
 
-        public async Task<bool> CheckStockAsync(int id, int requiredQuantity)
+        public async Task<StockResponseDto> CheckStockAsync(int id, int requiredQuantity)
         {
             var product = await _repo.GetByIdAsync(id).ConfigureAwait(false);
-            return product is not null && product.Quantity >= requiredQuantity;
+            var isSufficient = product is not null && product.Quantity >= requiredQuantity;
+            return new StockResponseDto
+            {
+                IsSufficient = isSufficient,
+                Message = isSufficient
+                    ? "Sufficient stock available."
+                    : "Insufficient stock or product not found."
+            };
         }
     }
 }

@@ -11,7 +11,7 @@ namespace ProductMicroservice.API.Services
         Task<ProductResponseDto> CreateAsync(ProductRequestDto dto);
         Task<bool> UpdateAsync(int id, ProductRequestDto dto);
         Task<bool> DeleteAsync(int id);
-        Task<bool> ValidateProductAsync(int id);
-        Task<bool> CheckStockAsync(int id, int requiredQuantity);
+        Task<ValidationResponseDto> ValidateProductAsync(int id);
+        Task<StockResponseDto> CheckStockAsync(int id, int requiredQuantity);
     }
 }

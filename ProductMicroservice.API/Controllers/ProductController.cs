@@ -67,24 +67,12 @@ namespace ProductMicroservice.API.Controllers
 
         // GET: api/products/{id}/validate
         [HttpGet("{id:int}/validate")]
-        public async Task<ActionResult> Validate(int id)
-        {
-            var exists = await _service.ValidateProductAsync(id).ConfigureAwait(false);
-            if (!exists)
-                return NotFound(new { Message = $"Product with ID {id} does not exist." });
-
-            return Ok(new { Message = "Product is valid." });
-        }
+        public async Task<ActionResult<ValidationResponseDto>> Validate(int id)
+            => Ok(await _service.ValidateProductAsync(id).ConfigureAwait(false));
 
         // GET: api/products/{id}/stock/{qty}
         [HttpGet("{id:int}/stock/{qty:int}")]
-        public async Task<ActionResult> CheckStock(int id, int qty)
-        {
-            var ok = await _service.CheckStockAsync(id, qty).ConfigureAwait(false);
-            if (!ok)
-                return BadRequest(new { Message = "Insufficient stock or product not found." });
-
-            return Ok(new { Message = "Sufficient stock available." });
-        }
+        public async Task<ActionResult<StockResponseDto>> CheckStock(int id, int qty)
+            => Ok(await _service.CheckStockAsync(id, qty).ConfigureAwait(false));
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using ProductMicroservice.API.Models;
+using ProductMicroservice.API.DTOs;
 
 namespace ProductMicroservice.API.Repositories
 {
@@ -12,5 +13,6 @@ namespace ProductMicroservice.API.Repositories
         Task UpdateAsync(Product product);
         Task DeleteAsync(int id);
         Task<bool> ExistsAsync(int id);
+
     }
 }
